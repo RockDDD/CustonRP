@@ -9,16 +9,28 @@ Shader "Unlit/BlinphongShader"
 
     SubShader
     {
-        Tags { "RenderType"="Opaque" "LightMode"="XForwardBase"}
         LOD 100
         Pass 
         {
+            Tags { "RenderType"="Opaque" "LightMode"="XForwardBase"}
             HLSLPROGRAM
             #pragma target 3.5
             #pragma vertex LightPassVertex
 			#pragma fragment LightPassFragment
 			#include "BlinnPhongLight.hlsl"
             ENDHLSL
+        }
+        Pass
+        {
+            Tags { "RenderType"="Opaque" "LightMode"="ShadowCaster"}
+            ColorMask 0
+
+			HLSLPROGRAM
+			#pragma target 3.5
+			#pragma vertex ShadowCasterPassVertex
+			#pragma fragment ShadowCasterPassFragment
+			#include "ShadowCasterPass.hlsl"
+			ENDHLSL
         }
     }
 }

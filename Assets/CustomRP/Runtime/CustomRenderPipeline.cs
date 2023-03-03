@@ -3,6 +3,13 @@ using UnityEngine.Rendering;
 
 public class CustomRenderPipeline : RenderPipeline
 {
+    const string bufferName = "Render Camera";
+    CommandBuffer buffer = new CommandBuffer 
+    {
+        name = bufferName
+    };
+    ScriptableRenderContext context;
+    
     private ShaderTagId _shaderTag = new ShaderTagId("XForwardBase");
     private CustomRenderPipelineAsset _asset;
     public CustomRenderPipeline(CustomRenderPipelineAsset asset)
@@ -22,12 +29,28 @@ public class CustomRenderPipeline : RenderPipeline
     
     private void RenderPerCamera(ScriptableRenderContext context,Camera camera)
     {
-        context.SetupCameraProperties(camera);
+        this.context = context;
         camera.TryGetCullingParameters( out var cullingParams);
+        cullingParams.shadowDistance = Mathf.Min(_asset.shadows.maxDistance,camera.farClipPlane);
         var cullingResults = context.Cull(ref cullingParams);
         
-        _lightingManager.Setup(context,cullingResults);
+        buffer.BeginSample(bufferName);
+        ExecuteBuffer();
+        _lightingManager.Setup(context,cullingResults,_asset);
+        buffer.EndSample(bufferName);
         
+        context.SetupCameraProperties(camera);
+        CameraClearFlags flags = camera.clearFlags;
+        buffer.ClearRenderTarget(
+            flags <= CameraClearFlags.Depth,
+            flags == CameraClearFlags.Color,
+            flags == CameraClearFlags.Color ?
+                camera.backgroundColor.linear : Color.clear
+        );
+   
+
+        buffer.BeginSample(bufferName);
+        ExecuteBuffer();
         var sortingSetting = new SortingSettings(camera);
         var drawingSettings = new DrawingSettings(_shaderTag, sortingSetting);
         var filteringSettings = new FilteringSettings(RenderQueueRange.all);
@@ -37,6 +60,18 @@ public class CustomRenderPipeline : RenderPipeline
         );
         
         context.DrawSkybox(camera);
+        
+        _lightingManager.Cleanup();
+        
+        buffer.EndSample(bufferName);
+        ExecuteBuffer();
+        
         context.Submit();
     }
+    
+    void ExecuteBuffer () {
+        context.ExecuteCommandBuffer(buffer);
+        buffer.Clear();
+    }
+
 }
