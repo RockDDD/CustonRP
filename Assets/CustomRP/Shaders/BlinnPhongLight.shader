@@ -12,6 +12,7 @@ Shader "Unlit/BlinphongShader"
         LOD 100
         Pass 
         {
+        	Name "BlinnPhongLightShader"
             Tags { "RenderType"="Opaque" "LightMode"="XForwardBase"}
             HLSLPROGRAM
             #pragma target 3.5
@@ -22,6 +23,7 @@ Shader "Unlit/BlinphongShader"
         }
         Pass
         {
+        	Name "BlinnPhongShaderShadowCaster"
             Tags { "RenderType"="Opaque" "LightMode"="ShadowCaster"}
             ColorMask 0
 
