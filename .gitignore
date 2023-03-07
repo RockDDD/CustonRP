@@ -5,4 +5,5 @@ obj/*
 UserSettings/*
 CustomRP.sln
 .idea/*
+*.vscode/*
 Assembly-CSharp.csproj
