@@ -3,7 +3,7 @@ Logs/*
 Temp/*
 obj/*
 UserSettings/*
-CustomRP.sln
+CustonRP.sln
 .idea/*
 *.vscode/*
 Assembly-CSharp.csproj

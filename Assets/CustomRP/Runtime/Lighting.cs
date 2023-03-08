@@ -11,9 +11,11 @@ public class Lighting
     {
         name = bufferName
     };
-    static int
+
+    private static int
         dirLightColorId = Shader.PropertyToID("_DirectionalLightColor"),
-        dirLightDirectionId = Shader.PropertyToID("_DirectionalLightDirection");
+        dirLightDirectionId = Shader.PropertyToID("_DirectionalLightDirection"),
+        dirLightShadowDataId = Shader.PropertyToID("_DirectionalLightShadowData");
     
     CullingResults cullingResults;
 
@@ -61,7 +63,8 @@ public class Lighting
         Light light = visibleLight.light;
         buffer.SetGlobalVector(dirLightColorId, light.color.linear);
         buffer.SetGlobalVector(dirLightDirectionId, -light.transform.forward);
-        _shadowCaster.ReserveDirectionalShadows(light,index);
+        Vector2 shadowData = _shadowCaster.ReserveDirectionalShadows(light,index);
+        buffer.SetGlobalVector(dirLightShadowDataId,shadowData);
     }
 
     public void Cleanup()

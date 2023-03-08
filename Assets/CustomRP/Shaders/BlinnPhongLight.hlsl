@@ -45,6 +45,8 @@ half4 LightPassFragment (Varyings input) : SV_TARGET
     float3 positionWS = input.positionWS;
     float3 normalWS = input.normalWS;
     half4 color = BlinnPongLight(positionWS,normalWS,_Shininess,baseColor,half4(1,1,1,1));
-    return color ;
+    DirectionalShadowData shadowData = GetDirectionalShadowData(0);
+    float attenuation = GetDirectionalShadowAttenuation(shadowData, positionWS);
+    return color * attenuation ;
 }
 #endif
