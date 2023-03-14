@@ -16,6 +16,7 @@ Shader "Unlit/BlinphongShader"
             Tags { "RenderType"="Opaque" "LightMode"="XForwardBase"}
             HLSLPROGRAM
             #pragma target 3.5
+            #pragma multi_compile _ _DIRECTIONAL_PCF3 _DIRECTIONAL_PCF5 _DIRECTIONAL_PCF7
             #pragma vertex LightPassVertex
 			#pragma fragment LightPassFragment
 			#include "BlinnPhongLight.hlsl"

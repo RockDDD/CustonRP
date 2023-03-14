@@ -26,11 +26,12 @@ half4 BlinnPongLight(float3 positionWS,float3 normalWS,float shininess,half4 dif
     return  LambertDiffuse(normalWS) * diffuseColor + BlinnPhongSpecular(viewDir,normalWS,shininess) * specularColor; 
 }
 
-DirectionalShadowData GetDirectionalShadowData(int lightIndex)
+DirectionalShadowData GetDirectionalShadowData(int lightIndex,ShadowData shadowData)
 {
     DirectionalShadowData data;
-    data.strength = _DirectionalLightShadowData.x;
-    data.tileIndex = _DirectionalLightShadowData.y;
+    data.strength = _DirectionalLightShadowData.x * shadowData.strength;
+    data.tileIndex = _DirectionalLightShadowData.y + shadowData.cascadeIndex;
+    data.normalBias = _DirectionalLightShadowData.z;
     return data;
 }
 
