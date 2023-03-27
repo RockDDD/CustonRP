@@ -46,13 +46,21 @@ public class ShadowSettings
 [CreateAssetMenu(menuName = "Rendering/CustomRenderPipeline")]
 public class CustomRenderPipelineAsset : RenderPipelineAsset
 {
-    [SerializeField]
-    private bool _srpBatcher = true;
+    [SerializeField] private bool _srpBatcher = true,
+        _useLightsPerObject = true;
 
     public bool enableSrpBatcher
     {
         get{
             return _srpBatcher;
+        }
+    }
+
+    public bool enableLightsPerObject
+    {
+        get
+        {
+            return _useLightsPerObject;
         }
     }
     [SerializeField]

@@ -51,8 +51,17 @@ public class CustomRenderPipeline : RenderPipeline
 
         buffer.BeginSample(bufferName);
         ExecuteBuffer();
+
+
+        PerObjectData lightsPerObjectFlags = _asset.enableLightsPerObject
+            ? PerObjectData.LightData | PerObjectData.LightIndices
+            : PerObjectData.None;
+        
         var sortingSetting = new SortingSettings(camera);
-        var drawingSettings = new DrawingSettings(_shaderTag, sortingSetting);
+        var drawingSettings = new DrawingSettings(_shaderTag, sortingSetting)
+        {
+            perObjectData = lightsPerObjectFlags
+        };
         var filteringSettings = new FilteringSettings(RenderQueueRange.all);
 
         context.DrawRenderers(

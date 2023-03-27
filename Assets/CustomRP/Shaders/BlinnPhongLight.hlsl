@@ -2,6 +2,7 @@
 #define CUSTOM_BLINNPHONG_LIGHT_PASS_INCLUDED
 
 #include "../ShaderLibrary/Common.hlsl"
+#include "../ShaderLibrary/Surface.hlsl"
 #include "../ShaderLibrary/Light.hlsl"
 struct Attributes
 {
@@ -42,12 +43,21 @@ half4 LightPassFragment (Varyings input) : SV_TARGET
 {
     float4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.baseUV);
     float4 baseColor = baseMap * _BaseColor;
-    float3 positionWS = input.positionWS;
-    float3 normalWS = input.normalWS;
-    half4 color = BlinnPongLight(positionWS,normalWS,_Shininess,baseColor,half4(1,1,1,1));
-    ShadowData shadowData = GetShadowData(positionWS);
-    DirectionalShadowData dirShadowData = GetDirectionalShadowData(0,shadowData);
-    float attenuation = GetDirectionalShadowAttenuation(dirShadowData, shadowData, normalWS, positionWS);
-    return color * attenuation;
+    Surface surface;
+    surface.color = baseColor.xyz;
+    surface.alpha = baseColor.w;
+    surface.position = input.positionWS;
+    surface.normal = input.normalWS;
+    surface.smoothness = _Shininess;
+    surface.metallic = 0;
+    surface.viewDirection = normalize(_WorldSpaceCameraPos - input.positionWS);
+    surface.depth = -TransformWorldToView(input.positionWS).z;
+    float3 color = GetLighting(surface);
+    return half4(color,1.0f);
+    //half4 color = BlinnPongLight(positionWS,normalWS,_Shininess,baseColor,half4(1,1,1,1));
+    //ShadowData shadowData = GetShadowData(positionWS);
+    //DirectionalShadowData dirShadowData = GetDirectionalShadowData(0,shadowData);
+    //float attenuation = GetDirectionalShadowAttenuation(dirShadowData, shadowData, normalWS, positionWS);
+    //return color * attenuation;
 }
 #endif
