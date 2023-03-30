@@ -41,6 +41,19 @@ public class ShadowSettings
         cascadeRatio3 = 0.5f,
         cascadeFade = 0.1f
     };
+
+    [System.Serializable]
+    public struct Other
+    {
+        public MapSize atlasSize;
+        public FilterMode filter;
+    }
+
+    public Other other = new Other()
+    {
+        atlasSize = MapSize._1024,
+        filter = FilterMode.PCF2x2
+    };
 }
 
 [CreateAssetMenu(menuName = "Rendering/CustomRenderPipeline")]

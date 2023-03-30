@@ -17,6 +17,7 @@ Shader "Unlit/BlinphongShader"
             HLSLPROGRAM
             #pragma target 3.5
             #pragma multi_compile _ _DIRECTIONAL_PCF3 _DIRECTIONAL_PCF5 _DIRECTIONAL_PCF7
+            #pragma multi_compile _ _OTHER_PCF3 _OTHER_PCF5 _OTHER_PCF7
             #pragma multi_compile _ _LIGHTS_PER_OBJECT
             #pragma vertex LightPassVertex
 			#pragma fragment LightPassFragment
